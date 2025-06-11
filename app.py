@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, make_response
+from flask import Flask, render_template, request, redirect, url_for, abort, make_response, flash
 import os
 from dotenv import load_dotenv
 from authlib.integrations.flask_client import OAuth
@@ -8,6 +8,7 @@ from flask_wtf.csrf import CSRFProtect
 
 from services.note_service import NoteService
 from services.auth_service import AuthService
+from forms import NoteForm
 
 
 load_dotenv()
@@ -51,7 +52,7 @@ def login_required(func):
 
 @app.route('/login', methods=['GET'])
 def login():
-    return render_template("login.html")
+    return render_template("login.jinja2")
 
 @app.route('/github-login', methods=['GET'])
 def github_login():
@@ -91,14 +92,14 @@ def index():
     notes = note_service.get_notes(page=1)
     total_notes = note_service.get_total_notes()
     total_pages = (total_notes + 10 - 1) // 10  # 假设每页10条
-    return render_template("index.html", notes=notes, page=1, total_pages=total_pages)
+    return render_template("index.jinja2", notes=notes, page=1, total_pages=total_pages)
 
 @app.route("/page/<int:page>")
 def page(page):
     notes = note_service.get_notes(page=page)
     total_notes = note_service.get_total_notes()
     total_pages = (total_notes + 10 - 1) // 10  # 假设每页10条
-    return render_template("index.html", notes=notes, page=page, total_pages=total_pages)
+    return render_template("index.jinja2", notes=notes, page=page, total_pages=total_pages)
 
 
 @app.route("/<string:id>")
@@ -106,19 +107,20 @@ def note_detail(id):
     note = note_service.get_note_by_id(id, md_type=False)
     if not note:
         abort(404)
-    return render_template("detail.html", note=note)
+    return render_template("detail.jinja2", note=note)
 
 
 @app.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
-    if request.method == "POST":
-        title = request.form.get("title")
-        content = request.form.get("content")
-        if title and content and note_service.create_note(title, content):
-            return redirect(url_for("index"))
+    form = NoteForm()
+    if form.validate_on_submit():
+        if note_service.create_note(form.title.data, form.content.data):
+            flash("笔记创建成功！", "success")
+            return redirect(request.referrer or url_for("index"))
     return render_template(
-        "edit.html",
+        "edit.jinja2",
+        form=form,  # 确保模板中能访问表单对象
         action_title="创建新笔记",
         action_url=url_for("create"),
         submit_button="保存",
@@ -128,17 +130,20 @@ def create():
 @app.route("/<string:id>/update", methods=["GET", "POST"])
 @login_required
 def update(id):
-    if request.method == "POST":
-        title = request.form.get("title")
-        content = request.form.get("content")
-        if title and content and note_service.update_note(id, title, content):
-            return redirect(url_for("index"))
-
+    form = NoteForm()
+    if form.validate_on_submit():
+        if note_service.update_note(id, form.title.data, form.content.data):
+            flash("笔记更新成功！", "success")
+            return redirect(request.referrer or url_for("index"))
+    
     note = note_service.get_note_by_id(id, md_type=True)
     if not note:
         abort(404)
+    form.title.data = note["title"]
+    form.content.data = note["content"]
     return render_template(
-        "edit.html",
+        "edit.jinja2",
+        form=form,  # 关键修复：传递 form 对象
         action_title="编辑笔记",
         action_url=url_for("update", id=id),
         submit_button="更新",

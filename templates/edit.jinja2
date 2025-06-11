@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.jinja2" %}
 {% block title %}
 
 {{ action_title }}{% endblock %}
@@ -10,15 +10,22 @@
       {{ action_title }}
     </h2>
     <form method="POST" action="{{ action_url }}">
-      <div class="mb-3">
-        <label for="title">标题</label>
-        <input type="text" class="form-control mb-3" id="title" name="title" value="{{ note.title if note else '' }}" required>
-      </div>
-      <div class="mb-3">
-        <label for="markdown-editor">内容</label>
-        <textarea id="markdown-editor" name="content">{{ note.content if note else '' }}</textarea>
-      </div>
-      <button type="submit" class="btn btn-secondary">{{ submit_button }}</button>
+        {{ form.csrf_token }}
+        <div class="mb-3">
+            <label for="title">标题</label>
+            {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+                <div class="text-danger">{{ form.title.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="content">内容</label>
+            {{ form.content(class="form-control") }}
+            {% if form.content.errors %}
+                <div class="text-danger">{{ form.content.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-secondary">{{ submit_button }}</button>
     </form>
   </div>
 </div>
@@ -31,7 +38,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const easyMDE = new EasyMDE({
       element: document.getElementById('markdown-editor'),
-      spellChecker: true,
+      spellChecker: false,
       initialValue: document.getElementById('markdown-editor').value,
       autoDownloadFontAwesome: true
     });
