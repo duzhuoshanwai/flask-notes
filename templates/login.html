@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <h2>登录</h2>
+            <p class="lead">请通过 GitHub 登录以继续操作。</p>
+            <a href="{{ url_for('github_login') }}" class="btn btn-primary">通过 GitHub 登录</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

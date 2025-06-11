@@ -1,0 +1,23 @@
+/* 黑暗模式下的EasyMDE样式 */
+[data-bs-theme="dark"] .EasyMDEContainer .CodeMirror,
+[data-bs-theme="dark"] .EasyMDEContainer .editor-toolbar {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+[data-bs-theme="dark"] .EasyMDEContainer .editor-toolbar button {
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .EasyMDEContainer .editor-toolbar button:hover {
+    background-color: #444;
+}
+
+[data-bs-theme="dark"] .EasyMDEContainer .CodeMirror-cursor {
+    border-color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .cm-s-easymde .CodeMirror-selected {
+    background-color: #3a3a3a;
+}

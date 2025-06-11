@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}
+
+{{ action_title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-4">
+      {{ action_title }}
+    </h2>
+    <form method="POST" action="{{ action_url }}">
+      <div class="mb-3">
+        <label for="title">标题</label>
+        <input type="text" class="form-control mb-3" id="title" name="title" value="{{ note.title if note else '' }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="markdown-editor">内容</label>
+        <textarea id="markdown-editor" name="content">{{ note.content if note else '' }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-secondary">{{ submit_button }}</button>
+    </form>
+  </div>
+</div>
+
+<!-- EasyMDE Markdown Editor CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<!-- EasyMDE Markdown Editor JS -->
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const easyMDE = new EasyMDE({
+      element: document.getElementById('markdown-editor'),
+      spellChecker: true,
+      initialValue: document.getElementById('markdown-editor').value,
+      autoDownloadFontAwesome: true
+    });
+  });
+</script>
+<!-- https://github.com/Ionaru/easy-markdown-editor/issues/131#issuecomment-1738202589 -->
+<style>
+  /* Custom CSS to make EasyMDE play nice with Bootstrap colors */
+
+  .EasyMDEContainer .CodeMirror {
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+    background-color: var(--bs-body-bg);
+  }
+
+  .EasyMDEContainer .cm-s-easymde .CodeMirror-cursor {
+    border-color: var(--bs-body-color);
+  }
+
+  .CodeMirror-cursor {
+    border-left: 1px solid var(--bs-body-color);
+    border-right: none;
+    width: 0;
+  }
+
+  .EasyMDEContainer .editor-toolbar>* {
+    border-color: var(--bs-body-bg);
+  }
+
+  .editor-toolbar {
+    border-top: 1px solid var(--bs-border-color);
+    border-left: 1px solid var(--bs-border-color);
+    border-right: 1px solid var(--bs-border-color);
+  }
+
+  .editor-toolbar i.separator {
+    border-left: 1px solid var(--bs-border-color);
+    border-right: 1px solid var(--bs-border-color);
+  }
+
+  .EasyMDEContainer .editor-toolbar>.active,
+  .editor-toolbar>button:hover,
+  .editor-preview pre,
+  .cm-s-easymde .cm-comment {
+    background-color: var(--bs-body-bg);
+  }
+
+  .EasyMDEContainer .CodeMirror-fullscreen {
+    background: var(--bs-body-bg);
+  }
+
+  .editor-toolbar.fullscreen {
+    background: var(--bs-body-bg);
+  }
+
+  .editor-preview {
+    background: var(--bs-body-bg);
+  }
+
+  .editor-preview-side {
+    border-color: var(--bs-border-color);
+  }
+
+  .CodeMirror-selected {
+    background: var(--bs-secondary-bg);
+  }
+
+  .CodeMirror-focused .CodeMirror-selected {
+    background: var(--bs-secondary-bg);
+  }
+
+  .CodeMirror-line::selection,
+  .CodeMirror-line>span::selection,
+  .CodeMirror-line>span>span::selection {
+    background: var(--bs-secondary-bg)
+  }
+
+  .CodeMirror-line::-moz-selection,
+  .CodeMirror-line>span::-moz-selection,
+  .CodeMirror-line>span>span::-moz-selection {
+    background: var(--bs-secondary-bg)
+  }
+
+  .EasyMDEContainer .CodeMirror-focused .CodeMirror-selected {
+    background: var(--bs-secondary-bg)
+  }
+</style>
+{% endblock %}
