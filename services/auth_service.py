@@ -15,8 +15,8 @@ class AuthService:
         payload = {
             "sub": "Notes login",
             "name": user_info.get("login"),
-            "iat": datetime.now(),
-            "exp": datetime.now() + timedelta(hours=24)  # 设置过期时间为24小时
+            "iat": int(datetime.now().timestamp()),
+            "exp": int((datetime.now() + timedelta(hours=24)).timestamp())
         }
         return jwt.encode(payload, self.secret_key, algorithm="HS256")
 
