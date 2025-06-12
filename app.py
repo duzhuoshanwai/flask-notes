@@ -72,8 +72,14 @@ def callback():
     # 生成 JWT 并存入 Cookie
     auth_service = AuthService()
     token = auth_service.generate_token(user_info)
-    response = make_response(redirect(url_for('index')))
-    response.set_cookie('jwt_token', token, httponly=True, secure=True, max_age=86400)  # 24小时过期
+    response = make_response(redirect(url_for("index")))
+    response.set_cookie(
+        "jwt_token",
+        token,
+        httponly=True,
+        secure=os.environ.get("FLASK_ENV") == "production",
+        max_age=86400,
+    )  # 24小时过期
     return response
 
 @app.route('/logout', methods=['GET'])
