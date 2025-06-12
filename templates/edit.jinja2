@@ -20,7 +20,7 @@
         </div>
         <div class="mb-3">
             <label for="content">内容</label>
-            {{ form.content(class="form-control") }}
+            {{ form.content(class="form-control",id="markdown-editor") }}
             {% if form.content.errors %}
                 <div class="text-danger">{{ form.content.errors[0] }}</div>
             {% endif %}
