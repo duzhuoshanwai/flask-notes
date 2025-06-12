@@ -2,6 +2,7 @@
 
 ```bash
 pip install .
+python3 init_db.py
 # Dev
 flask run app --debug
 # Gunicorn 部署
